@@ -4,6 +4,72 @@
 
 This allows the given "source code" to be fully typed (TypeScript).
 
+## Example
+
+**Input**
+
+```tsx
+const YourComponent = () => {
+  const foo = 'bar'
+  return (
+    <LiveProvider scope={{ foo }} data-your-attributes>
+      <div>{foo}</div>
+    </LiveProvider>
+  )
+}
+```
+
+**Output**
+
+```tsx
+const YourComponent = () => {
+  const foo = 'bar'
+  return (
+    <LiveProvider scope={{ foo }} data-your-attributes>
+      {`<div>{foo}</div>`}
+    </LiveProvider>
+  )
+}
+```
+
+When used with a render callback, it is transformed to use ReactLive's `render` (noInline).
+
+**Input**
+
+```tsx
+const YourComponent = () => {
+  const foo = 'bar'
+  return (
+    <LiveProvider scope={{ foo, styled }}>
+      {() => {
+        const StyledDiv = styled.div`
+          color: red;
+        `
+        return <StyledDiv>{foo}</StyledDiv>
+      }}
+    </LiveProvider>
+  )
+}
+```
+
+**Output**
+
+```tsx
+const YourComponent = () => {
+  const foo = 'bar'
+  return (
+    <LiveProvider scope={{ foo, styled }} noInline>
+      {`
+        const StyledDiv = styled.div\`
+          color: red;
+        \`
+        render(<StyledDiv>{foo}</StyledDiv>)
+      `}
+    </LiveProvider>
+  )
+}
+```
+
 ## How to use
 
 Install `babel-plugin-react-live` and add it to your Babel config.
@@ -25,4 +91,4 @@ Install `babel-plugin-react-live` and add it to your Babel config.
 
 ## How it works
 
-It uses AST to transform related code to a string.
+It uses Babel AST to transform related code to a string.
