@@ -43,3 +43,25 @@ export const MockManyChilds = () => {
     </ComponentBox>
   )
 }
+
+export const MockFragment = () => {
+  return (
+    <ComponentBox data-test="id">
+      <>
+        <span>content 1</span>
+        <span>content 2</span>
+        <span>content 3</span>
+      </>
+    </ComponentBox>
+  )
+}
+
+export const MockText = () => {
+  return (
+    <ComponentBox data-test="id">
+      text
+      <span>content</span>
+      text
+    </ComponentBox>
+  )
+}
