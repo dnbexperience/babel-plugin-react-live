@@ -85,8 +85,10 @@ it('babelPluginReactLive', async () => {
       return (
         <ComponentBox data-test="id">{\`<>
       text
+      {'text'}
       <span>content</span>
       text
+      {'text'}
     </>
     \`}</ComponentBox>
       )

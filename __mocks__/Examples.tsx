@@ -59,9 +59,9 @@ export const MockFragment = () => {
 export const MockText = () => {
   return (
     <ComponentBox data-test="id">
-      text
+      text {'text'}
       <span>content</span>
-      text
+      text {'text'}
     </ComponentBox>
   )
 }

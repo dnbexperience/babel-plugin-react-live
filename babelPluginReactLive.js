@@ -39,11 +39,7 @@ function babelPluginReactLive(babel, options) {
            * Do nothing, if the child is already a string / template literal
            */
           !path.node.children.some((node) => {
-            return (
-              node.expression &&
-              (t.isTemplateLiteral(node.expression) ||
-                t.isStringLiteral(node.expression))
-            )
+            return node.expression && t.isTemplateLiteral(node.expression)
           })
         ) {
           const rootPath = path
@@ -103,6 +99,18 @@ function babelPluginReactLive(babel, options) {
                 const code = path.getSource()
 
                 if (code.trim().length) {
+                  children.push(code)
+                }
+              }
+            },
+            JSXExpressionContainer(path) {
+              if (
+                rootPath === path.parentPath &&
+                path.node.expression.type !== 'ArrowFunctionExpression'
+              ) {
+                const code = path.getSource()
+
+                if (code.length) {
                   children.push(code)
                 }
               }
