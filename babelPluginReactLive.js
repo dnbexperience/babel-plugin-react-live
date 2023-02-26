@@ -91,6 +91,22 @@ function babelPluginReactLive(babel, options) {
                 children.push(code)
               }
             },
+            JSXFragment(path) {
+              if (rootPath === path.parentPath) {
+                const code = path.getSource()
+
+                children.push(code)
+              }
+            },
+            JSXText(path) {
+              if (rootPath === path.parentPath) {
+                const code = path.getSource()
+
+                if (code.trim().length) {
+                  children.push(code)
+                }
+              }
+            },
           })
 
           if (children.length > 0) {
