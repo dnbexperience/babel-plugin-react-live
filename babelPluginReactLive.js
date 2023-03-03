@@ -58,7 +58,7 @@ function babelPluginReactLive(babel, options) {
                     if (currentReturnStatement === path.node) {
                       const code = path
                         .getSource()
-                        .replace(/return ((.|\n)*)/, 'render($1)')
+                        .replace(/return ((.|\n|\r)*)/, 'render($1)')
 
                       const node = t.identifier(code)
                       path.replaceWith(node)

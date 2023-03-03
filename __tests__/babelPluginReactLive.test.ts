@@ -45,7 +45,11 @@ it('babelPluginReactLive', async () => {
         <ComponentBox data-test="id" noInline>{\`const DemoComponent = () => {
       return <>content</>
     }
-    render(<DemoComponent />)
+    render(
+      <div>
+        <DemoComponent />
+      </div>
+    )
     \`}</ComponentBox>
       )
     }
