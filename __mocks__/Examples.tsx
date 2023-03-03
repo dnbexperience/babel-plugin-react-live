@@ -10,7 +10,11 @@ export const MockNoInlineWithComponent = () => {
           return <>content</>
         }
 
-        return <DemoComponent />
+        return (
+          <div>
+            <DemoComponent />
+          </div>
+        )
       }}
     </ComponentBox>
   )
