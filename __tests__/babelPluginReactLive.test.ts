@@ -67,11 +67,11 @@ it('babelPluginReactLive', async () => {
     }
     export const MockManyChilds = () => {
       return (
-        <ComponentBox data-test="id">{\`<>
-      <div>content 1</div>
-      <div>content 2</div>
-      <div>content 3</div>
-    </>
+        <ComponentBox data-test="id">{\`
+    <div>content 1</div>
+    <div>content 2</div>
+    <div>content 3</div>
+
     \`}</ComponentBox>
       )
     }
@@ -87,13 +87,13 @@ it('babelPluginReactLive', async () => {
     }
     export const MockText = () => {
       return (
-        <ComponentBox data-test="id">{\`<>
-      text
-      {'text'}
-      <span>content</span>
-      text
-      {'text'}
-    </>
+        <ComponentBox data-test="id">{\`
+    text
+    {'text'}
+    <span>content</span>
+    text
+    {'text'}
+
     \`}</ComponentBox>
       )
     }
