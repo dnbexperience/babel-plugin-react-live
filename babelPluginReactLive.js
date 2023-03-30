@@ -8,21 +8,30 @@ function babelPluginReactLive(babel, options) {
     ? JSON.parse(fs.readFileSync(options.prettierPath, 'utf-8'))
     : {}
 
-  const wrappCodeInside = (code) => {
-    const formattedCode = prettier.format(code, {
+  const convertCodeToJSX = (children) => {
+    // So prettier can do its work,
+    // we wrap our JSX children in a fragment.
+    // But we also remvoe it afterwards.
+    let code =
+      children.length > 1
+        ? `<>${children.join('\n')}</>`
+        : children.join('\n')
+
+    code = prettier.format(code, {
       ...prettierrc,
       parser: 'babel',
     })
 
+    // Prettier adds a leading ;
+    // And we also escape `
+    code = code.replace(/^;/, '').replace(/`/g, '\\`')
+
+    if (children.length > 1) {
+      code = code.replace(/^<>|<\/>$|^\s{2}/gm, '')
+    }
+
     return t.jsxExpressionContainer(
-      t.templateLiteral(
-        [
-          t.templateElement({
-            raw: formattedCode.replace(/^;/, '').replace(/`/g, '\\`'),
-          }),
-        ],
-        []
-      )
+      t.templateLiteral([t.templateElement({ raw: code })], [])
     )
   }
 
@@ -129,13 +138,7 @@ function babelPluginReactLive(babel, options) {
               )
             }
 
-            path.node.children = [
-              wrappCodeInside(
-                children.length > 1
-                  ? `<>${children.join('\n')}</>`
-                  : children.join('\n')
-              ),
-            ]
+            path.node.children = [convertCodeToJSX(children)]
 
             path.replaceWith(t.identifier(path.toString()))
           }
