@@ -69,3 +69,15 @@ export const MockText = () => {
     </ComponentBox>
   )
 }
+
+export const MockEvents = () => {
+  return (
+    <ComponentBox data-test="id">
+      <DemoComponent
+        onChange={(e) => {
+          console.log(e)
+        }}
+      />
+    </ComponentBox>
+  )
+}
