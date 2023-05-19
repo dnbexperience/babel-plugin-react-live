@@ -31,7 +31,7 @@ it('babelPluginReactLive', async () => {
     plugins: [[babelPluginReactLive, pluginOptions]],
   })
 
-  const code = String(babelFileResult?.code)
+  const code = removeConsoleNinja(String(babelFileResult?.code))
 
   const formattedCode = prettier.format(code, {
     filepath: 'file.tsx',
@@ -101,7 +101,11 @@ it('babelPluginReactLive', async () => {
       return (
         <ComponentBox data-test="id">{\`<DemoComponent
       onChange={(e) => {
+        // comment
         console.log(e)
+      }}
+      onFocus={(e) => {
+        const cleaned = 'console.log(e)'
       }}
     />
     \`}</ComponentBox>
@@ -114,3 +118,13 @@ it('babelPluginReactLive', async () => {
   expect(formattedCode.match(/\{`/g)).toHaveLength(7)
   expect(formattedCode.match(/`\}/g)).toHaveLength(7)
 })
+
+function removeConsoleNinja(code) {
+  if (code.includes('oo_cm')) {
+    const index = code.indexOf('function oo_cm()')
+    code = code.slice(0, index)
+    code = code.replace(/(\/\* eslint-disable \*\/(\n|\s|)+)/g, '')
+  }
+
+  return code
+}

@@ -164,7 +164,18 @@ function babelPluginReactLive(babel, options) {
 function astToCode(ast) {
   const { code } = generate(ast)
 
-  return code.replace(/;$/, '')
+  return removeConsoleNinja(code.replace(/;$/, ''))
+}
+
+function removeConsoleNinja(code) {
+  if (code.includes('oo_oo')) {
+    code = code.replace(
+      /(\/\* eslint-disable \*\/)(\n|\s|)+(.*\()(\n|\s|)+...oo_oo\(`.*`,(\s|)((.*)|(.*\n.*))\)/g,
+      '$3$6'
+    )
+  }
+
+  return code
 }
 
 module.exports = babelPluginReactLive

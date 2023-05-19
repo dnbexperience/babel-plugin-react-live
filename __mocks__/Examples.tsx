@@ -75,7 +75,12 @@ export const MockEvents = () => {
     <ComponentBox data-test="id">
       <DemoComponent
         onChange={(e) => {
+          // comment
           console.log(e)
+        }}
+        onFocus={(e) => {
+          /* eslint-disable */
+          const cleaned = 'console.log(...oo_oo(`ecc41efd_0`, e))'
         }}
       />
     </ComponentBox>
