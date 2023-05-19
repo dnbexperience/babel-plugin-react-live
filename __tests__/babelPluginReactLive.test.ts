@@ -97,10 +97,20 @@ it('babelPluginReactLive', async () => {
     \`}</ComponentBox>
       )
     }
+    export const MockEvents = () => {
+      return (
+        <ComponentBox data-test="id">{\`<DemoComponent
+      onChange={(e) => {
+        console.log(e)
+      }}
+    />
+    \`}</ComponentBox>
+      )
+    }
     "
   `)
 
   expect(formattedCode.match(/noInline/g)).toHaveLength(2)
-  expect(formattedCode.match(/\{`/g)).toHaveLength(6)
-  expect(formattedCode.match(/`\}/g)).toHaveLength(6)
+  expect(formattedCode.match(/\{`/g)).toHaveLength(7)
+  expect(formattedCode.match(/`\}/g)).toHaveLength(7)
 })

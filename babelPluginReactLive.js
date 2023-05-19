@@ -1,5 +1,6 @@
 const fs = require('fs')
 const prettier = require('prettier')
+const { default: generate } = require('@babel/generator')
 
 function babelPluginReactLive(babel, options) {
   const { types: t } = babel
@@ -26,6 +27,7 @@ function babelPluginReactLive(babel, options) {
     // And we also escape `
     code = code.replace(/^;/, '').replace(/`/g, '\\`')
 
+    // Remove fragments we added in the first place
     if (children.length > 1) {
       code = code.replace(/^<>|<\/>$|^\s{2}/gm, '')
     }
@@ -65,11 +67,11 @@ function babelPluginReactLive(babel, options) {
                 path.traverse({
                   ReturnStatement(path) {
                     if (currentReturnStatement === path.node) {
-                      const code = path
-                        .getSource()
-                        .replace(/return ((.|\n|\r)*)/, 'render($1)')
+                      const code = astToCode(path.node)
 
-                      const node = t.identifier(code)
+                      const node = t.identifier(
+                        code.replace(/return ((.|\n|\r)*)/, 'render($1)')
+                      )
                       path.replaceWith(node)
 
                       path.stop()
@@ -77,12 +79,9 @@ function babelPluginReactLive(babel, options) {
                   },
                 })
 
-                const code = path
-                  .toString()
-                  .replace(/^\{/, '')
-                  .replace(/\}$/, '')
+                const code = astToCode(path.node)
 
-                children.push(code)
+                children.push(code.replace(/^\{/, '').replace(/\}$/, ''))
 
                 path.stop()
 
@@ -91,21 +90,21 @@ function babelPluginReactLive(babel, options) {
             },
             JSXElement(path) {
               if (rootPath === path.parentPath) {
-                const code = path.getSource()
+                const code = astToCode(path.node)
 
                 children.push(code)
               }
             },
             JSXFragment(path) {
               if (rootPath === path.parentPath) {
-                const code = path.getSource()
+                const code = astToCode(path.node)
 
                 children.push(code)
               }
             },
             JSXText(path) {
               if (rootPath === path.parentPath) {
-                const code = path.getSource()
+                const code = astToCode(path.node)
 
                 if (code.trim().length) {
                   children.push(code)
@@ -117,7 +116,7 @@ function babelPluginReactLive(babel, options) {
                 rootPath === path.parentPath &&
                 path.node.expression.type !== 'ArrowFunctionExpression'
               ) {
-                const code = path.getSource()
+                const code = astToCode(path.node)
 
                 if (code.length) {
                   children.push(code)
@@ -140,7 +139,8 @@ function babelPluginReactLive(babel, options) {
 
             path.node.children = [convertCodeToJSX(children)]
 
-            path.replaceWith(t.identifier(path.toString()))
+            const code = astToCode(path.node)
+            path.replaceWith(t.identifier(code))
           }
         }
       },
@@ -159,6 +159,12 @@ function babelPluginReactLive(babel, options) {
       },
     },
   }
+}
+
+function astToCode(ast) {
+  const { code } = generate(ast)
+
+  return code.replace(/;$/, '')
 }
 
 module.exports = babelPluginReactLive
