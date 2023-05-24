@@ -170,7 +170,7 @@ function astToCode(ast) {
 function removeConsoleNinja(code) {
   if (code.includes('oo_oo')) {
     code = code.replace(
-      /(\/\* eslint-disable \*\/)(\n|\s|)+(.*\()(\n|\s|)+...oo_oo\(`.*`,(\s|)((.*)|(.*\n.*))\)/g,
+      /(\/\* eslint-disable \*\/)?(\n|\s|)+(.*\()(\n|\s|)+...oo_oo\(`.*`,(\s|)((.*)|(.*\n.*))\)/g,
       '$3$6'
     )
   }

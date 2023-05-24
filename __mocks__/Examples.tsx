@@ -78,6 +78,7 @@ export const MockEvents = () => {
           // comment
           console.log(e)
         }}
+        onOpen={(e) => 'console.log(...oo_oo(`ecc41efd_0`, e))'}
         onFocus={(e) => {
           /* eslint-disable */
           const cleaned = 'console.log(...oo_oo(`ecc41efd_0`, e))'

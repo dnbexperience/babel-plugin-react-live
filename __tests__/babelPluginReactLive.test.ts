@@ -104,6 +104,7 @@ it('babelPluginReactLive', async () => {
         // comment
         console.log(e)
       }}
+      onOpen={(e) => 'console.log(e)'}
       onFocus={(e) => {
         const cleaned = 'console.log(e)'
       }}
