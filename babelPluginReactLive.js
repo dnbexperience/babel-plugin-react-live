@@ -24,16 +24,21 @@ function babelPluginReactLive(babel, options) {
     })
 
     // Prettier adds a leading ;
-    // And we also escape `
-    code = code.replace(/^;/, '').replace(/`/g, '\\`')
+    code = code.replace(/^;/, '')
+
+    // Also escape backticks (`)
+    code = code.replace(/`/g, '\\`')
 
     // Remove fragments we added in the first place
     if (children.length > 1) {
       code = code.replace(/^<>|<\/>$|^\s{2}/gm, '')
     }
 
+    const raw = code.replace(/\$\{/g, '\\${')
+    const templateElement = t.templateElement({ raw, cooked: code }, true)
+
     return t.jsxExpressionContainer(
-      t.templateLiteral([t.templateElement({ raw: code })], [])
+      t.templateLiteral([templateElement], [])
     )
   }
 
