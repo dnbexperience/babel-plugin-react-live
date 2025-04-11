@@ -16,108 +16,124 @@ const pluginOptions = {
   prettierPath,
 }
 
-it('babelPluginReactLive', async () => {
-  const babelFileResult = await transformFileAsync(targetFile, {
-    code: true,
-    presets: [
-      [
-        '@babel/preset-env',
-        {
-          modules: false,
-          targets: { firefox: '100' },
-        },
+describe('transformFileAsync', () => {
+  it('should convert Examples.tsx with all exported examples', async () => {
+    const babelFileResult = await transformFileAsync(targetFile, {
+      code: true,
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            modules: false,
+            targets: { firefox: '100' },
+          },
+        ],
       ],
-    ],
-    plugins: [[babelPluginReactLive, pluginOptions]],
+      plugins: [[babelPluginReactLive, pluginOptions]],
+    })
+
+    const code = removeConsoleNinja(String(babelFileResult?.code))
+
+    const formattedCode = prettier.format(code, {
+      filepath: 'file.tsx',
+      semi: false,
+    })
+
+    expect(formattedCode).toMatchInlineSnapshot(`
+      "const ComponentBox = ({ children }) => children
+      export const MockNoInlineWithComponent = () => {
+        return (
+          <ComponentBox data-test="id" noInline>{\`const DemoComponent = () => {
+        return <>content</>
+      }
+      render(
+        <div>
+          <DemoComponent />
+        </div>
+      )
+      \`}</ComponentBox>
+        )
+      }
+      export const MockNoInlineWithBackticks = () => {
+        return (
+          <ComponentBox data-test="id" noInline>{\`const DemoComponent = () => {
+        const more = '456'
+        return \\\`123\\\${more}\\\` + \\\`789\\\`
+      }
+      render(
+        <div>
+          <DemoComponent />
+        </div>
+      )
+      \`}</ComponentBox>
+        )
+      }
+      export const MockNoInlineWithText = () => {
+        return (
+          <ComponentBox data-test="id" noInline>{\`render(<>content</>)
+      \`}</ComponentBox>
+        )
+      }
+      export const MockOneChilds = () => {
+        return (
+          <ComponentBox data-test="id">{\`<div>content</div>
+      \`}</ComponentBox>
+        )
+      }
+      export const MockManyChilds = () => {
+        return (
+          <ComponentBox data-test="id">{\`
+      <div>content 1</div>
+      <div>content 2</div>
+      <div>content 3</div>
+
+      \`}</ComponentBox>
+        )
+      }
+      export const MockFragment = () => {
+        return (
+          <ComponentBox data-test="id">{\`<>
+        <span>content 1</span>
+        <span>content 2</span>
+        <span>content 3</span>
+      </>
+      \`}</ComponentBox>
+        )
+      }
+      export const MockText = () => {
+        return (
+          <ComponentBox data-test="id">{\`
+      text
+      {'text'}
+      <span>content</span>
+      text
+      {'text'}
+
+      \`}</ComponentBox>
+        )
+      }
+      export const MockEvents = () => {
+        return (
+          <ComponentBox data-test="id">{\`<DemoComponent
+        onChange={(e) => {
+          // comment
+          console.log(e)
+        }}
+        onOpen={(e) => 'console.log(e)'}
+        onFocus={(e) => {
+          const cleaned = 'console.log(e)'
+        }}
+      />
+      \`}</ComponentBox>
+        )
+      }
+      "
+    `)
+
+    expect(formattedCode.match(/noInline/g)).toHaveLength(3)
+    expect(formattedCode.match(/\{`/g)).toHaveLength(8)
+    expect(formattedCode.match(/`\}/g)).toHaveLength(8)
   })
-
-  const code = removeConsoleNinja(String(babelFileResult?.code))
-
-  const formattedCode = prettier.format(code, {
-    filepath: 'file.tsx',
-    semi: false,
-  })
-
-  expect(formattedCode).toMatchInlineSnapshot(`
-    "const ComponentBox = ({ children }) => children
-    export const MockNoInlineWithComponent = () => {
-      return (
-        <ComponentBox data-test="id" noInline>{\`const DemoComponent = () => {
-      return <>content</>
-    }
-    render(
-      <div>
-        <DemoComponent />
-      </div>
-    )
-    \`}</ComponentBox>
-      )
-    }
-    export const MockNoInlineWithText = () => {
-      return (
-        <ComponentBox data-test="id" noInline>{\`render(<>content</>)
-    \`}</ComponentBox>
-      )
-    }
-    export const MockOneChilds = () => {
-      return (
-        <ComponentBox data-test="id">{\`<div>content</div>
-    \`}</ComponentBox>
-      )
-    }
-    export const MockManyChilds = () => {
-      return (
-        <ComponentBox data-test="id">{\`
-    <div>content 1</div>
-    <div>content 2</div>
-    <div>content 3</div>
-
-    \`}</ComponentBox>
-      )
-    }
-    export const MockFragment = () => {
-      return (
-        <ComponentBox data-test="id">{\`<>
-      <span>content 1</span>
-      <span>content 2</span>
-      <span>content 3</span>
-    </>
-    \`}</ComponentBox>
-      )
-    }
-    export const MockText = () => {
-      return (
-        <ComponentBox data-test="id">{\`
-    text
-    {'text'}
-    <span>content</span>
-    text
-    {'text'}
-
-    \`}</ComponentBox>
-      )
-    }
-    export const MockEvents = () => {
-      return (
-        <ComponentBox data-test="id">{\`<DemoComponent
-      onChange={(e) => {
-        // comment
-        console.log(e)
-      }}
-      onOpen={(e) => 'console.log(e)'}
-      onFocus={(e) => {
-        const cleaned = 'console.log(e)'
-      }}
-    />
-    \`}</ComponentBox>
-      )
-    }
-    "
-  `)
-
-  expect(formattedCode.match(/noInline/g)).toHaveLength(2)
-  expect(formattedCode.match(/\{`/g)).toHaveLength(7)
-  expect(formattedCode.match(/`\}/g)).toHaveLength(7)
 })
 
 function removeConsoleNinja(code) {
