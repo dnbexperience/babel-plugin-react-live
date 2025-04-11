@@ -20,6 +20,25 @@ export const MockNoInlineWithComponent = () => {
   )
 }
 
+export const MockNoInlineWithBackticks = () => {
+  return (
+    <ComponentBox data-test="id">
+      {() => {
+        const DemoComponent = () => {
+          const more = '456'
+          return `123${more}` + `789`
+        }
+
+        return (
+          <div>
+            <DemoComponent />
+          </div>
+        )
+      }}
+    </ComponentBox>
+  )
+}
+
 export const MockNoInlineWithText = () => {
   return (
     <ComponentBox data-test="id">
