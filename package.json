@@ -13,7 +13,7 @@
     "type": "git",
     "url": "https://github.com/dnbexperience/eufemia.git"
   },
-  "version": "1.4.3",
+  "version": "1.4.4",
   "main": "babelPluginReactLive.js",
   "scripts": {
     "test": "jest",
