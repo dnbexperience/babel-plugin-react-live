@@ -20,7 +20,7 @@ function babelPluginReactLive(babel, options) {
 
     code = prettier.format(code, {
       ...prettierrc,
-      parser: 'babel',
+      parser: 'babel-ts',
     })
 
     // Prettier adds a leading ;

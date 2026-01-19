@@ -134,9 +134,54 @@ describe('transformFileAsync', () => {
     expect(formattedCode.match(/\{`/g)).toHaveLength(8)
     expect(formattedCode.match(/`\}/g)).toHaveLength(8)
   })
+
+  it('should format TypeScript syntax with the babel-ts parser', async () => {
+    const targetFileWithTypes = nodePath.resolve(
+      __dirname,
+      '../__mocks__/ExamplesTypeAnnotations.tsx'
+    )
+    const pluginOptionsWithTypes = {
+      componentName: 'ComponentBox',
+      filesToMatch: ['ExamplesTypeAnnotations.tsx'],
+      prettierPath,
+    }
+
+    const babelFileResult = await transformFileAsync(targetFileWithTypes, {
+      code: true,
+      presets: [
+        [
+          '@babel/preset-env',
+          {
+            modules: false,
+            targets: { firefox: '100' },
+          },
+        ],
+      ],
+      plugins: [[babelPluginReactLive, pluginOptionsWithTypes]],
+    })
+
+    const code = removeConsoleNinja(String(babelFileResult?.code))
+
+    const formattedCode = prettier.format(code, {
+      filepath: 'file.tsx',
+      semi: false,
+    })
+
+    expect(formattedCode).toMatchInlineSnapshot(`
+      "const ComponentBox = ({ children }) => children
+      export const MockTypeAnnotations = () => {
+        const value = "hello"
+        return (
+          <ComponentBox data-test="id">{\`<span>{value as string}</span>
+      \`}</ComponentBox>
+        )
+      }
+      "
+    `)
+  })
 })
 
-function removeConsoleNinja(code) {
+function removeConsoleNinja(code: string): string {
   if (code.includes('oo_cm')) {
     const index = code.indexOf('function oo_cm()')
     code = code.slice(0, index)
