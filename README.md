@@ -92,3 +92,9 @@ Install `babel-plugin-react-live` and add it to your Babel config.
 ## How it works
 
 It uses Babel AST to transform related code to a string.
+
+## License
+
+Licensed under the [Eufemia DNB Project License v1.0](./LICENSE) for DNB Group projects, including internal and customer-facing applications and suppliers working on DNB's behalf. Public access does not permit reuse in unrelated projects.
+
+Third-party materials retain their own terms. Earlier-version rights and separate agreements remain in effect. By submitting a contribution, you agree to the contributor grant in section 3 of the license and confirm that you have the right to grant it.
